@@ -3,6 +3,8 @@ const express = require('express')
 const morgan  = require('morgan')
 const helmet  = require('helmet')
 
+const { game } = require('./routes')
+
 require('dotenv').config({
   debug: true,
   path: path.join(__dirname + '/.env'),
@@ -16,6 +18,9 @@ app.use(helmet())
 app.use(morgan('dev'))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
+
+// Game routes.
+app.use('/games', game)
 
 // Default routes.
 app.use((req, res) => {
