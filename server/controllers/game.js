@@ -1,7 +1,8 @@
-const Game = require('../models/game')
+const Game              = require('../models/game')
+const { generateBoard } = require('../utils/game')
 
 const gameController = {
-  index(req, res) {
+  index (req, res) {
     res.send('It works!')
   },
   
@@ -13,14 +14,23 @@ const gameController = {
    * @param req
    * @param res
    */
-  create(req, res) {
+  create (req, res) {
+    const { difficulty } = req.body
+    
     try {
-    
+      const board = generateBoard(difficulty)
+      
+      res.json({
+        game: {
+          board,
+        },
+      })
+    } catch (err) {
+      res.status(400).json({
+        message: err.message,
+      })
     }
-    catch (err) {
-    
-    }
-  }
+  },
 }
 
 module.exports = gameController
