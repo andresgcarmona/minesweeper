@@ -6,8 +6,9 @@ const gameSchema = new Schema({
   id: ObjectId,
   difficulty: String,
   boardSize: Array,
-  numMines: Number,
+  mines: Number,
   board: Array,
+  elapsedTime: Number,
 })
 
 module.exports = mongoose.model('games', gameSchema)
