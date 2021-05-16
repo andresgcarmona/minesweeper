@@ -1,4 +1,5 @@
 const { gameConfig } = require('../config/config')
+const Cell = require('./cell')
 
 function makeArray (cols, rows) {
   let arr = new Array(cols)
@@ -7,13 +8,6 @@ function makeArray (cols, rows) {
   }
   
   return arr
-}
-
-class Cell {
-  constructor () {
-    this.revealed = false
-    this.isMine   = false
-  }
 }
 
 function generateBoard (difficulty = 'beginner') {
