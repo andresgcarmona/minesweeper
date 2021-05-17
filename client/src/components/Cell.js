@@ -1,5 +1,7 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
+import GameContext from '../GameContext'
 import styled from '@emotion/styled'
+import axios from 'axios'
 
 const StyledCell = styled.span`
   border: 1px solid black;
@@ -29,20 +31,30 @@ const StyledCell = styled.span`
 `
 
 const Cell = ({
-  width,
-  height,
+  row,
+  col,
   isMine = false,
 }) => {
   const [flagged, setFlagged]   = useState(false)
   const [revealed, setRevealed] = useState(false)
   
-  function markCell (e) {
+  const gameContext = useContext(GameContext)
+  
+  async function markCell (e) {
     e.preventDefault()
     
     const button = e.which || e.button
     
     // Left click.
     if (parseInt(button) === 0 && !flagged) {
+      const response = await axios.post(`${gameContext.url}/games/check`, {
+        id: gameContext.game._id,
+        row,
+        col,
+      })
+  
+      console.log(response)
+      
       setRevealed(true)
     }
     
@@ -53,8 +65,6 @@ const Cell = ({
   }
   
   return <StyledCell
-    width={width}
-    height={height}
     isMine
     flagged={flagged}
     revealed={revealed}

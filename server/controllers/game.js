@@ -1,6 +1,6 @@
-const Game              = require('../models/game')
+const Game = require('../models/game')
 const { generateBoard } = require('../utils/game')
-const { gameConfig }    = require('../config/config')
+const { gameConfig } = require('../config/config')
 
 const gameController = {
   index (req, res) {
@@ -41,6 +41,56 @@ const gameController = {
       res.status(400).json({
         message: err.message,
         err: JSON.stringify(err),
+      })
+    }
+  },
+  
+  /**
+   * Mark a cell as revealed.
+   *
+   * @param req
+   * @param res
+   * @returns {Promise<void>}
+   */
+  async checkCell (req, res) {
+    const {
+            row,
+            col,
+            id,
+          } = req.body
+    
+    try {
+      // Get cel from board array.
+      let cell, game = null
+      let r, index
+      
+      for (r = 0; r < res.game.board.length; r++) {
+        cell = res.game.board[r].find((item, i) => {
+          if (item.row === parseInt(row) && item.col === parseInt(col)) {
+            index = i
+            return true
+          }
+        })
+        
+        if (cell) break
+      }
+      
+      if (cell) {
+        // Set cell as revealed.
+        cell.revealed = true
+        
+        // Create a copy of the board.
+        const board = [...res.game.board]
+        board[r].splice(index, 1, cell)
+        
+        res.game.board = board
+        game = await res.game.save()
+      }
+      
+      res.json(game)
+    } catch (err) {
+      res.status(500).json({
+        message: err.message,
       })
     }
   },
