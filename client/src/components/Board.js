@@ -7,9 +7,9 @@ const Grid = styled.div`
   width: auto;
   height: auto;
   background-color: transparent;
+  user-select: none;
+  cursor: default;
 `
-
-const createCell = (cell) => <Cell {...cell} />
 
 const Board = ({ size = [10, 10], board }) => {
   let rows = []
@@ -18,14 +18,14 @@ const Board = ({ size = [10, 10], board }) => {
     let cells = []
     
     for (let j = 0; j < board[i].length; j++) {
-      cells.push(createCell(board[i][j]))
+      cells.push(<Cell {...board[i][j]} key={`${i}-${j}`} />)
     }
     
-    rows.push(<div style={{height: '20px'}}>{cells}</div>)
+    rows.push(<div style={{height: '22px'}} key={`${i}`}>{cells}</div>)
   }
   
   return (
-    <Grid>{rows}</Grid>
+    <Grid onContextMenu={(e) => e.preventDefault()}>{rows}</Grid>
   )
 }
 
