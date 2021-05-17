@@ -35,7 +35,8 @@ const gameController = {
       })
       
       const newGame = await game.save()
-      
+      newGame.board = []
+  
       res.status(201).json(newGame)
     } catch (err) {
       res.status(400).json({
@@ -78,16 +79,28 @@ const gameController = {
       if (cell) {
         // Set cell as revealed.
         cell.revealed = true
-        
+  
         // Create a copy of the board.
         const board = [...res.game.board]
         board[r].splice(index, 1, cell)
         
-        res.game.board = board
-        game = await res.game.save()
+        await Game.updateOne({
+          _id: id
+        }, {
+          '$set': {
+            board: board
+          }
+        }).then(async response => {
+          const game = await Game.findById(id)
+          game.board = []
+          
+          res.json(game)
+        }).catch(err => {
+          res.json({
+            message: err.message
+          })
+        })
       }
-      
-      res.json(game)
     } catch (err) {
       res.status(500).json({
         message: err.message,
