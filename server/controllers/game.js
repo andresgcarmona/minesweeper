@@ -35,7 +35,7 @@ const gameController = {
       })
       
       const newGame = await game.save()
-      newGame.board = []
+      //newGame.board = []
   
       res.status(201).json(newGame)
     } catch (err) {
@@ -92,7 +92,7 @@ const gameController = {
           }
         }).then(async response => {
           const game = await Game.findById(id)
-          game.board = []
+          //game.board = []
           
           res.json(game)
         }).catch(err => {

@@ -33,9 +33,10 @@ const StyledCell = styled.span`
 const Cell = ({
   row,
   col,
+  isMine = false,
 }) => {
   const [flagged, setFlagged]   = useState(false)
-  const [revealed, setRevealed] = useState(false)
+  const [revealed, setRevealed] = useState(true)
   
   const gameContext = useContext(GameContext)
   
@@ -51,8 +52,6 @@ const Cell = ({
         row,
         col,
       })
-  
-      console.log(response)
       
       setRevealed(true)
     }
@@ -68,7 +67,9 @@ const Cell = ({
     flagged={flagged}
     revealed={revealed}
     onClick={(e) => markCell(e)}
-    onContextMenu={(e) => markCell(e)}/>
+    onContextMenu={(e) => markCell(e)}>
+    {isMine ? '*' : ''}
+  </StyledCell>
 }
 
 export default Cell

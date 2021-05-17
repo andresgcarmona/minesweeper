@@ -64,7 +64,7 @@ function App () {
         <div className="App">
           <h1 className="font-semibold text-4xl mb-4">Minesweeper</h1>
           
-          {game && <Board size={game.boardSize} board={generateBoard(...game.boardSize)}/>}
+          {game && <Board size={game.boardSize} board={game.board}/>}
         </div>
       </Container>
     </GameContext.Provider>
