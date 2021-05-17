@@ -16,7 +16,8 @@ const StyledCell = styled.span`
   font-weight: bold;
   
   &:hover {
-    background-color: #dee6ed;
+    ${({ revealed, flagged }) => !revealed && !flagged ? 'background-color:' +
+  ' #dee6ed' : ''};
   }
   
   ${({ flagged }) => flagged && `background-color: rgba(255, 61, 61, 0.82)`}
@@ -41,7 +42,7 @@ const Cell = ({
     const button = e.which || e.button
     
     // Left click.
-    if (parseInt(button) === 0) {
+    if (parseInt(button) === 0 && !flagged) {
       setRevealed(true)
     }
     

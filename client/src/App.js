@@ -17,6 +17,8 @@ function App () {
   const [game, setGame]   = useState(null)
   
   async function createGame (difficulty) {
+    setGame(null)
+    
     const game = (await axios.post(`${url}/games`, {
       difficulty,
     })).data
