@@ -1,10 +1,19 @@
 import React from 'react'
 import styled from '@emotion/styled'
 
-const StyledCell = styled.div`
+const StyledCell = styled.span`
   border: 1px solid black;
-  width: ${props => props.width}px;
-  height: ${props => props.height}px;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  margin: 0;
+  border: 3px outset #ddd;
+  background-color: #c9c9c9;
+  vertical-align: middle;
+  text-align: center;
+  line-height: 1rem;
+  font-weight: bold;
 `
 
 const Cell = ({
