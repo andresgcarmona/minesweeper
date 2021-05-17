@@ -11,4 +11,4 @@ const gameSchema = new Schema({
   elapsedTime: Number,
 })
 
-module.exports = mongoose.model('games', gameSchema)
+module.exports = mongoose.model('minesweeper', gameSchema)
