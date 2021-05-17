@@ -1,5 +1,6 @@
 const Game              = require('../models/game')
 const { generateBoard } = require('../utils/game')
+const { gameConfig }    = require('../config/config')
 
 const gameController = {
   index (req, res) {
@@ -14,20 +15,33 @@ const gameController = {
    * @param req
    * @param res
    */
-  create (req, res) {
+  async create (req, res) {
     const { difficulty } = req.body
+    const config         = gameConfig[difficulty]
+  
+    console.log(config)
     
     try {
-      const board = generateBoard(difficulty)
+      const cols = config.boardSize[0]
+      const rows = config.boardSize[1]
       
-      res.json({
-        game: {
-          board,
-        },
+      const board = generateBoard(cols, rows)
+      
+      const game = new Game({
+        boardSize: config.boardSize,
+        mines: config.numMines,
+        elapsedTime: 0,
+        difficulty,
+        board,
       })
+      
+      const newGame = await game.save()
+      
+      res.status(201).json(newGame)
     } catch (err) {
       res.status(400).json({
         message: err.message,
+        err: JSON.stringify(err),
       })
     }
   },

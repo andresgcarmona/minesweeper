@@ -1,4 +1,3 @@
-const { gameConfig } = require('../config/config')
 const Cell = require('./cell')
 
 function makeArray (cols, rows) {
@@ -10,15 +9,11 @@ function makeArray (cols, rows) {
   return arr
 }
 
-function generateBoard (difficulty = 'beginner') {
-  const config = gameConfig[difficulty]
-  const cols   = config.boardSize[0]
-  const rows   = config.boardSize[1]
-  
+function generateBoard (cols, rows) {
   let board = makeArray(cols, rows)
   
   for (let i = 0; i < cols; i++) {
-    for (let j = 0; j < config.boardSize[1]; j++) {
+    for (let j = 0; j < rows; j++) {
       board[i][j] = new Cell()
     }
   }
