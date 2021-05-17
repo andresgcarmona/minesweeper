@@ -9,12 +9,12 @@ function makeArray (cols, rows) {
   return arr
 }
 
-function generateBoard (cols, rows) {
-  let board = makeArray(cols, rows)
+function generateBoard (rows, cols) {
+  let board = makeArray(rows,  cols)
   
-  for (let i = 0; i < cols; i++) {
-    for (let j = 0; j < rows; j++) {
-      board[i][j] = new Cell()
+  for (let i = 0; i < rows; i++) {
+    for (let j = 0; j < cols; j++) {
+      board[i][j] = new Cell(i, j)
     }
   }
   
