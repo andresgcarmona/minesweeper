@@ -18,8 +18,6 @@ const gameController = {
   async create (req, res) {
     const { difficulty } = req.body
     const config         = gameConfig[difficulty]
-  
-    console.log(config)
     
     try {
       const cols = config.boardSize[0]
@@ -33,6 +31,7 @@ const gameController = {
         elapsedTime: 0,
         difficulty,
         board,
+        state: 'new',
       })
       
       const newGame = await game.save()

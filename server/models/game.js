@@ -9,6 +9,7 @@ const gameSchema = new Schema({
   mines: Number,
   board: Array,
   elapsedTime: Number,
+  state: String,
 })
 
 module.exports = mongoose.model('minesweeper', gameSchema)
