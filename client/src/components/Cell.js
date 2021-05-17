@@ -33,7 +33,6 @@ const StyledCell = styled.span`
 const Cell = ({
   row,
   col,
-  isMine = false,
 }) => {
   const [flagged, setFlagged]   = useState(false)
   const [revealed, setRevealed] = useState(false)

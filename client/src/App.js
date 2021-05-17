@@ -5,6 +5,30 @@ import Config from './components/Config'
 import Board from './components/Board'
 import GameContext from './GameContext'
 
+const makeArray = (cols, rows) => {
+  let arr = new Array(cols)
+  for (let i = 0; i < arr.length; i++) {
+    arr[i] = new Array(rows)
+  }
+  
+  return arr
+}
+
+const generateBoard = (rows, cols) => {
+  let board = makeArray(rows, cols)
+  
+  for (let i = 0; i < rows; i++) {
+    for (let j = 0; j < cols; j++) {
+      board[i][j] = {
+        row: i,
+        col: j,
+      }
+    }
+  }
+  
+  return board
+}
+
 const url = 'http://localhost:3000'
 
 const Container = styled.div`
@@ -14,7 +38,6 @@ const Container = styled.div`
 `
 
 function App () {
-  const [board, setBoard] = useState([[]])
   const [game, setGame]   = useState(null)
   
   const gameContext = useContext(GameContext)
@@ -27,7 +50,6 @@ function App () {
     })).data
     
     setGame(game)
-    setBoard(game.board)
   }
   
   return (
@@ -42,7 +64,7 @@ function App () {
         <div className="App">
           <h1 className="font-semibold text-4xl mb-4">Minesweeper</h1>
           
-          {game && <Board size={game.boardSize} board={board}/>}
+          {game && <Board size={game.boardSize} board={generateBoard(...game.boardSize)}/>}
         </div>
       </Container>
     </GameContext.Provider>

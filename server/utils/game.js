@@ -54,4 +54,5 @@ const getGameById = async(req, res, next) => {
 module.exports = {
   generateBoard,
   getGameById,
+  makeArray,
 }
