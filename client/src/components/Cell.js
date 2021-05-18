@@ -1,5 +1,5 @@
 import React, {
-  forwardRef, useContext, useImperativeHandle, useState,
+  forwardRef, useContext, useImperativeHandle, useState, useEffect
 } from 'react'
 import GameContext from '../GameContext'
 import styled from '@emotion/styled'
@@ -47,11 +47,17 @@ const Cell = forwardRef(({
   isMine = false,
   neighborCount,
   revealNeighbors,
+  setGameOver,
+  isRevealed = false,
 }, ref) => {
   const [flagged, setFlagged]   = useState(false)
   const [revealed, setRevealed] = useState(false)
   
   const gameContext = useContext(GameContext)
+  
+  useEffect(() => {
+    setRevealed(isRevealed)
+  }, [isRevealed])
   
   useImperativeHandle(ref, () => ({
     async reveal() {
@@ -68,6 +74,11 @@ const Cell = forwardRef(({
   
     setRevealed(true)
   
+    // Check if is a mine.
+    if (isMine) {
+      return setGameOver(true)
+    }
+    
     // Check if this is an empty cell, if so, then reveal all cells around
     // it and around its other neighbors.
     if (neighborCount === 0) {
@@ -81,7 +92,7 @@ const Cell = forwardRef(({
     const button = e.which || e.button
     
     // Left click.
-    if (parseInt(button) === 0 && !flagged) {
+    if (parseInt(button) === 0 && !flagged && !revealed) {
       await revealCell()
     }
     

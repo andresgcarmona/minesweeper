@@ -1,33 +1,9 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import axios from 'axios'
 import styled from '@emotion/styled'
 import Config from './components/Config'
 import Board from './components/Board'
 import GameContext from './GameContext'
-
-const makeArray = (cols, rows) => {
-  let arr = new Array(cols)
-  for (let i = 0; i < arr.length; i++) {
-    arr[i] = new Array(rows)
-  }
-  
-  return arr
-}
-
-const generateBoard = (rows, cols) => {
-  let board = makeArray(rows, cols)
-  
-  for (let i = 0; i < rows; i++) {
-    for (let j = 0; j < cols; j++) {
-      board[i][j] = {
-        row: i,
-        col: j,
-      }
-    }
-  }
-  
-  return board
-}
 
 const url = 'http://localhost:3000'
 
@@ -38,18 +14,34 @@ const Container = styled.div`
 `
 
 function App () {
-  const [game, setGame]   = useState(null)
+  const [board, setBoard]       = useState([[]])
+  const [game, setGame]         = useState(null)
+  const [gameOver, setGameOver] = useState(false)
+  
+  useEffect(() => {
+    const terminateGame = async() => {
+      const response = await axios.post(`${gameContext.url}/games/lost`, {
+        id: game._id,
+      })
+  
+      setBoard(response.data.board)
+    }
+    
+    if (gameOver) terminateGame()
+  }, [gameOver])
   
   const gameContext = useContext(GameContext)
   
   async function createGame (difficulty) {
     setGame(null)
+    setGameOver(false)
     
     const game = (await axios.post(`${gameContext.url}/games`, {
       difficulty,
     })).data
     
     setGame(game)
+    setBoard(game.board)
   }
   
   return (
@@ -59,12 +51,16 @@ function App () {
       url,
     }}>
       <Container className="container">
-        <Config newGame={createGame}/>
+        <Config newGame={createGame} hasLost={gameOver} />
         
         <div className="App">
           <h1 className="font-semibold text-4xl mb-4">Minesweeper</h1>
           
-          {game && <Board size={game.boardSize} board={game.board}/>}
+          {gameOver && <div className="text-red-500 font-bold mb-4">You lost! :(</div> }
+          
+          {game && <Board size={game.boardSize}
+                          board={board}
+                          setGameOver={setGameOver}/>}
         </div>
       </Container>
     </GameContext.Provider>

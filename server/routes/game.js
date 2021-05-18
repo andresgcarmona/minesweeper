@@ -12,4 +12,7 @@ router.post('/', gameController.create)
 // Check a cell in the board.
 router.post('/check', getGameById, gameController.checkCell)
 
+// Set game as lost.
+router.post('/lost', getGameById, gameController.markAsLost)
+
 module.exports = router

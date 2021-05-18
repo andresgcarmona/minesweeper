@@ -7,7 +7,7 @@ const levels = [
   'custom',
 ]
 
-const Config = ({ newGame }) => {
+const Config = ({ newGame, hasLost }) => {
   const [difficulty, setDifficulty] = useState('beginner')
   
   return (

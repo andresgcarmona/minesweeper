@@ -14,6 +14,7 @@ const Grid = styled.div`
 const Board = ({
   size = [10, 10],
   board,
+  setGameOver,
 }) => {
   let rows = []
   
@@ -26,14 +27,19 @@ const Board = ({
       cells.push(<Cell {...board[i][j]}
                        key={`${i}-${j}`}
                        ref={board[i][j].ref}
-                       revealNeighbors={(row, col) => floodFill(row, col, board,
-                         size)}/>)
+                       isRevealed={board[i][j].revealed}
+                       revealNeighbors={
+                         (row, col) => floodFill(row, col)
+                       }
+                       setGameOver={() => terminateGame()}/>)
     }
     
     rows.push(<div style={{ height: '22px' }} key={`${i}`}>{cells}</div>)
   }
   
-  const floodFill = (i, j, board, [rows, cols]) => {
+  const floodFill = (i, j) => {
+    const [rows, cols] = size
+    
     for (let n = -1; n <= 1; n++) {
       // Calculate and validate col position
       const col = i + n
@@ -50,6 +56,17 @@ const Board = ({
         }
       }
     }
+  }
+  
+  const terminateGame = () => {
+    console.log('terminating game')
+    for (let i = 0; i < board.length; i++) {
+      for (let j = 0; j < board[i].length; j++) {
+        board[i][j].revealed = true
+      }
+    }
+    
+    setGameOver(true)
   }
   
   return (

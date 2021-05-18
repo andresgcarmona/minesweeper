@@ -1,6 +1,6 @@
-const Game = require('../models/game')
+const Game              = require('../models/game')
 const { generateBoard } = require('../utils/game')
-const { gameConfig } = require('../config/config')
+const { gameConfig }    = require('../config/config')
 
 const gameController = {
   index (req, res) {
@@ -35,8 +35,7 @@ const gameController = {
       })
       
       const newGame = await game.save()
-      //newGame.board = []
-  
+      
       res.status(201).json(newGame)
     } catch (err) {
       res.status(400).json({
@@ -79,30 +78,63 @@ const gameController = {
       if (cell) {
         // Set cell as revealed.
         cell.revealed = true
-  
+        
         // Create a copy of the board.
         const board = [...res.game.board]
         board[r].splice(index, 1, cell)
         
         await Game.updateOne({
-          _id: id
+          _id: id,
         }, {
           '$set': {
-            board: board
-          }
+            board: board,
+            state: cell.isMine ? 'lost' : 'playing',
+          },
         }).then(async response => {
           const game = await Game.findById(id)
-          //game.board = []
           
           res.json(game)
         }).catch(err => {
           res.json({
-            message: err.message
+            message: err.message,
           })
         })
       }
     } catch (err) {
       res.status(500).json({
+        message: err.message,
+      })
+    }
+  },
+  
+  async markAsLost (req, res) {
+    const board  = [...res.game.board]
+    const { id } = req.body
+    
+    for (let i = 0; i < board.length; i++) {
+      for (let j = 0; j < board[i].length; j++) {
+        board[i][j].revealed = true
+      }
+    }
+    
+    try {
+      await Game.updateOne({
+        _id: id,
+      }, {
+        '$set': {
+          board: board,
+        },
+      }).then(async response => {
+        const game = await Game.findById(id)
+        
+        res.json(game)
+      }).catch(err => {
+        res.json({
+          message: err.message,
+        })
+      })
+    } catch (err) {
+      res.status(500).send({
         message: err.message,
       })
     }
