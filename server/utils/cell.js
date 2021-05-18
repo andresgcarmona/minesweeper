@@ -1,7 +1,7 @@
 class Cell {
-  constructor (row, col, board) {
+  constructor (row, col, isMine = false) {
     this.revealed = false
-    this.isMine   = Math.floor(1 + Math.random() * 2) === 2
+    this.isMine   = isMine
     this.row      = row
     this.col      = col
     

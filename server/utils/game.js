@@ -10,8 +10,36 @@ const makeArray = (cols, rows) => {
   return arr
 }
 
+const generateBoard = (rows, cols, totalMines) => {
+  let board = makeArray(rows, cols)
+  
+  const mines = []
+  
+  for (let i = 0; i < rows; i++) {
+    for (let j = 0; j < cols; j++) {
+      board[i][j] = new Cell(i, j)
+      mines.push([i, j])
+    }
+  }
+  
+  // Set mines.
+  for (let n = 0; n < totalMines; n++) {
+    const index = Math.floor(Math.random() * mines.length)
+    const i = mines[index][0]
+    const j = mines[index][1]
+    
+    board[i][j].isMine = true
+    
+    mines.splice(index, 1)
+  }
+  
+  board = countNeighbors(board, rows, cols)
+  
+  return board
+}
+
 const countNeighbors = (board, rows, cols) => {
-  for(let i = 0; i < board.length; i++) {
+  for (let i = 0; i < board.length; i++) {
     for (let j = 0; j < board[i].length; j++) {
       // If current cell is a mine, then don't count the neighbors.
       if (board[i][j].isMine) continue
@@ -19,7 +47,7 @@ const countNeighbors = (board, rows, cols) => {
       for (let n = -1; n <= 1; n++) {
         // Calculate and validate col position
         const col = i + n
-        if(col < 0 || col >= cols) continue
+        if (col < 0 || col >= cols) continue
         
         for (let k = -1; k <= 1; k++) {
           // Calculate and validate row position
@@ -33,20 +61,6 @@ const countNeighbors = (board, rows, cols) => {
       }
     }
   }
-  
-  return board
-}
-
-const generateBoard = (rows, cols) => {
-  let board = makeArray(rows,  cols)
-  
-  for (let i = 0; i < rows; i++) {
-    for (let j = 0; j < cols; j++) {
-      board[i][j] = new Cell(i, j)
-    }
-  }
-  
-  board = countNeighbors(board, rows, cols)
   
   return board
 }
@@ -72,10 +86,9 @@ const getGameById = async(req, res, next) => {
     res.game = game
     
     next()
-  }
-  catch (err) {
+  } catch (err) {
     res.status(500).json({
-      message: err.message
+      message: err.message,
     })
   }
 }

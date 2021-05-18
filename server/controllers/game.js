@@ -23,7 +23,7 @@ const gameController = {
       const cols = config.boardSize[0]
       const rows = config.boardSize[1]
       
-      const board = generateBoard(cols, rows)
+      const board = generateBoard(cols, rows, config.numMines)
       
       const game = new Game({
         boardSize: config.boardSize,
