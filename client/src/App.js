@@ -32,12 +32,12 @@ function App () {
   
   const gameContext = useContext(GameContext)
   
-  async function createGame (difficulty) {
+  async function createGame (gameInfo) {
     setGame(null)
     setGameOver(false)
     
     const game = (await axios.post(`${gameContext.url}/games`, {
-      difficulty,
+      ...gameInfo,
     })).data
     
     setGame(game)

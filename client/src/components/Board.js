@@ -59,7 +59,6 @@ const Board = ({
   }
   
   const terminateGame = () => {
-    console.log('terminating game')
     for (let i = 0; i < board.length; i++) {
       for (let j = 0; j < board[i].length; j++) {
         board[i][j].revealed = true
