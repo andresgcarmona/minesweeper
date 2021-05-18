@@ -34,6 +34,7 @@ const Cell = ({
   row,
   col,
   isMine = false,
+  neighborCount,
 }) => {
   const [flagged, setFlagged]   = useState(false)
   const [revealed, setRevealed] = useState(true)
@@ -68,7 +69,7 @@ const Cell = ({
     revealed={revealed}
     onClick={(e) => markCell(e)}
     onContextMenu={(e) => markCell(e)}>
-    {isMine ? '*' : ''}
+    {isMine ? '*' : neighborCount}
   </StyledCell>
 }
 
