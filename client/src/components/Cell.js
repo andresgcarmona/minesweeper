@@ -1,4 +1,6 @@
-import React, { useState, useContext } from 'react'
+import React, {
+  forwardRef, useContext, useImperativeHandle, useState,
+} from 'react'
 import GameContext from '../GameContext'
 import styled from '@emotion/styled'
 import axios from 'axios'
@@ -18,7 +20,10 @@ const StyledCell = styled.span`
   font-weight: bold;
   
   &:hover {
-    ${({ revealed, flagged }) => !revealed && !flagged ? 'background-color:' +
+    ${({
+  revealed,
+  flagged,
+}) => !revealed && !flagged ? 'background-color:' +
   ' #dee6ed' : ''};
   }
   
@@ -30,31 +35,48 @@ const StyledCell = styled.span`
   `}
 `
 
-const Cell = ({
+const Cell = forwardRef(({
   row,
   col,
   isMine = false,
   neighborCount,
-}) => {
+  revealNeighbors,
+}, ref) => {
   const [flagged, setFlagged]   = useState(false)
-  const [revealed, setRevealed] = useState(true)
+  const [revealed, setRevealed] = useState(false)
   
   const gameContext = useContext(GameContext)
   
-  async function markCell (e) {
+  useImperativeHandle(ref, () => ({
+    async reveal() {
+      await revealCell()
+    }
+  }))
+  
+  const revealCell = async() => {
+    await axios.post(`${gameContext.url}/games/check`, {
+      id: gameContext.game._id,
+      row,
+      col,
+    })
+  
+    setRevealed(true)
+  
+    // Check if this is an empty cell, if so, then reveal all cells around
+    // it and around its other neighbors.
+    if (neighborCount === 0) {
+      revealNeighbors(row, col)
+    }
+  }
+  
+  const markCell = async(e) => {
     e.preventDefault()
     
     const button = e.which || e.button
     
     // Left click.
     if (parseInt(button) === 0 && !flagged) {
-      const response = await axios.post(`${gameContext.url}/games/check`, {
-        id: gameContext.game._id,
-        row,
-        col,
-      })
-      
-      setRevealed(true)
+      await revealCell()
     }
     
     // Right click.
@@ -69,8 +91,10 @@ const Cell = ({
     revealed={revealed}
     onClick={(e) => markCell(e)}
     onContextMenu={(e) => markCell(e)}>
-    {isMine ? '*' : neighborCount}
+    {isMine ? (revealed ? '*' : '') : (revealed ? (neighborCount > 0
+      ? neighborCount
+      : '') : '')}
   </StyledCell>
-}
+})
 
 export default Cell
