@@ -15,8 +15,6 @@ const Board = ({
   size = [10, 10],
   board,
 }) => {
-//  const [reveal, setReveal] = useState(() => () => {})
-  
   let rows = []
   
   for (let i = 0; i < board.length; i++) {
@@ -36,11 +34,6 @@ const Board = ({
   }
   
   const floodFill = (i, j, board, [rows, cols]) => {
-    console.log({
-      i,
-      j,
-    })
-    
     for (let n = -1; n <= 1; n++) {
       // Calculate and validate col position
       const col = i + n
@@ -50,11 +43,6 @@ const Board = ({
         // Calculate and validate row position
         const row = j + k
         if (row < 0 || row >= rows) continue
-        
-        console.log({
-          col,
-          row,
-        })
         
         if (!board[col][row].revealed) {
           board[col][row].revealed = true

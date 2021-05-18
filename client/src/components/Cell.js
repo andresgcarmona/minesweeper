@@ -28,8 +28,14 @@ const StyledCell = styled.span`
   }
   
   ${({ flagged }) => flagged && `background-color: rgba(255, 61, 61, 0.82)`}
-  ${({ revealed }) => revealed && `
+  ${({ revealed, neighborCount }) => (revealed && neighborCount > 0) && `
     background-color: rgb(213, 187, 191);
+    border: 1px solid grey;
+    padding: 2px;
+  `}
+  
+  ${({ revealed, neighborCount }) => (revealed && neighborCount <= 0) && `
+    background-color: #c9c9c9;
     border: 1px solid grey;
     padding: 2px;
   `}
@@ -89,6 +95,7 @@ const Cell = forwardRef(({
     isMine
     flagged={flagged}
     revealed={revealed}
+    neighborCount={neighborCount}
     onClick={(e) => markCell(e)}
     onContextMenu={(e) => markCell(e)}>
     {isMine ? (revealed ? '*' : '') : (revealed ? (neighborCount > 0
