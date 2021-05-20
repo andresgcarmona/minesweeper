@@ -47,7 +47,7 @@ const Cell = forwardRef(({
   isMine = false,
   neighborCount,
   revealNeighbors,
-  setGameOver,
+  setGameState,
   isRevealed = false,
 }, ref) => {
   const [flagged, setFlagged]   = useState(false)
@@ -76,7 +76,7 @@ const Cell = forwardRef(({
   
     // Check if is a mine.
     if (isMine) {
-      return setGameOver(true)
+      return setGameState('lost')
     }
     
     // Check if this is an empty cell, if so, then reveal all cells around
