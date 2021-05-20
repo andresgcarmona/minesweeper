@@ -17,8 +17,6 @@ const gameController = {
   async create (req, res) {
     const { difficulty, numMines, rows, cols } = req.body
   
-    console.log({ difficulty, numMines, rows, cols })
-    
     try {
       const board = generateBoard(cols, rows, numMines)
       

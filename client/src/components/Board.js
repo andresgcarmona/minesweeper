@@ -14,7 +14,7 @@ const Grid = styled.div`
 const Board = ({
   size = [10, 10],
   board,
-  setGameOver,
+  setGameState,
 }) => {
   let rows = []
   
@@ -31,7 +31,7 @@ const Board = ({
                        revealNeighbors={
                          (row, col) => floodFill(row, col)
                        }
-                       setGameOver={() => terminateGame()}/>)
+                       setGameState={() => terminateGame()}/>)
     }
     
     rows.push(<div style={{ height: '22px' }} key={`${i}`}>{cells}</div>)
@@ -64,8 +64,8 @@ const Board = ({
         board[i][j].revealed = true
       }
     }
-    
-    setGameOver(true)
+  
+    setGameState('lost')
   }
   
   return (

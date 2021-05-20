@@ -27,12 +27,12 @@ const levels = {
 }
 
 const Config = ({
-  newGame,
-  hasLost,
+  createGame,
+  setGameState,
+  gameState,
 }) => {
   const [difficulty, setDifficulty]   = useState('beginner')
   const [currentTime, setCurrentTime] = useState(0)
-  const [isRunning, setIsRunning]     = useState(false)
   const [rows, setRows]               = useState(10)
   const [cols, setCols]               = useState(10)
   const [numMines, setNumMines]       = useState(9)
@@ -40,14 +40,14 @@ const Config = ({
   useEffect(() => {
     let handler
     
-    if (isRunning) {
+    if (gameState === 'playing') {
       handler = setInterval(() => {
         setCurrentTime(seconds => seconds + 1)
       }, 1000)
     }
     
     return () => clearInterval(handler)
-  }, [isRunning, hasLost])
+  }, [gameState])
   
   const setGameConfig = (difficulty) => {
     setDifficulty(difficulty)
@@ -110,8 +110,9 @@ const Config = ({
             transition"
                   onClick={() => {
                     setCurrentTime(0)
-                    setIsRunning(false)
-                    newGame({
+                    setGameState('new')
+                    
+                    createGame({
                       difficulty,
                       rows,
                       cols,

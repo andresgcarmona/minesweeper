@@ -14,27 +14,27 @@ const Container = styled.div`
 `
 
 function App () {
-  const [board, setBoard]       = useState([[]])
-  const [game, setGame]         = useState(null)
-  const [gameOver, setGameOver] = useState(false)
+  const [board, setBoard]         = useState([[]])
+  const [game, setGame]           = useState(null)
+  const [gameState, setGameState] = useState('pending')
   
   useEffect(() => {
     const terminateGame = async() => {
       const response = await axios.post(`${gameContext.url}/games/lost`, {
         id: game._id,
       })
-  
+      
       setBoard(response.data.board)
     }
     
-    if (gameOver) terminateGame()
-  }, [gameOver])
+    if (gameState === 'lost') terminateGame()
+  }, [gameState])
   
   const gameContext = useContext(GameContext)
   
   async function createGame (gameInfo) {
     setGame(null)
-    setGameOver(false)
+    setGameState('new')
     
     const game = (await axios.post(`${gameContext.url}/games`, {
       ...gameInfo,
@@ -51,16 +51,19 @@ function App () {
       url,
     }}>
       <Container className="container">
-        <Config newGame={createGame} hasLost={gameOver} />
+        <Config createGame={createGame}
+                gameState={gameState}
+                setGameState={setGameState}/>
         
         <div className="App">
           <h1 className="font-semibold text-4xl mb-4">Minesweeper</h1>
           
-          {gameOver && <div className="text-red-500 font-bold mb-4">You lost! :(</div> }
+          {gameState === 'lost' &&
+          <div className="text-red-500 font-bold mb-4">You lost! :(</div>}
           
           {game && <Board size={game.boardSize}
                           board={board}
-                          setGameOver={setGameOver}/>}
+                          setGameState={setGameState}/>}
         </div>
       </Container>
     </GameContext.Provider>
