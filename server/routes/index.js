@@ -1,5 +1,7 @@
-const game = require('./game')
+const games = require('./game')
+const users = require('./user')
 
 module.exports = {
-  game,
+  games,
+  users,
 }

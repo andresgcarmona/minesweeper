@@ -5,7 +5,7 @@ const helmet   = require('helmet')
 const mongoose = require('mongoose')
 const cors     = require('cors')
 
-const { game } = require('./routes')
+const { games, users } = require('./routes')
 
 require('dotenv').config({
   debug: true,
@@ -23,7 +23,10 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
 // Game routes.
-app.use('/games', game)
+app.use('/games', games)
+
+// Users routes.
+app.use('/users', users)
 
 // Default routes.
 app.use((req, res) => {

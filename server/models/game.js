@@ -12,4 +12,4 @@ const gameSchema = new Schema({
   state: String,
 })
 
-module.exports = mongoose.model('minesweeper', gameSchema)
+module.exports = mongoose.model('game', gameSchema)

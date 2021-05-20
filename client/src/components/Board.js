@@ -69,7 +69,9 @@ const Board = ({
   }
   
   return (
-    <Grid onContextMenu={(e) => e.preventDefault()}>{rows}</Grid>
+    <div className="mb-8">
+      <Grid onContextMenu={(e) => e.preventDefault()}>{rows}</Grid>
+    </div>
   )
 }
 
