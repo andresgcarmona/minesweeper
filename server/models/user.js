@@ -9,6 +9,14 @@ const userSchema = new Schema({
     type: String,
     default: uuid.v1(),
   },
+  games: [
+    {
+      type: ObjectId,
+      ref: 'Game'
+    }
+  ]
+}, {
+  timestamps: true
 })
 
-module.exports = mongoose.model('user', userSchema)
+module.exports = mongoose.model('User', userSchema)

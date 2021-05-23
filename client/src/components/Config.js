@@ -104,8 +104,9 @@ const Config = ({
             px-4
             py-1
             border
-            border-gray-300
-            rounded-sm
+            border-gray-200
+            rounded
+            bg-gray-100
             hover:bg-gray-200
             transition"
                   onClick={() => {
@@ -125,7 +126,7 @@ const Config = ({
         
         <div className="mr-2">
           <p>Your time: <span className="font-semibold">{currentTime}</span></p>
-        </div>
+        </div>ga
       </div>
     </div>
   )

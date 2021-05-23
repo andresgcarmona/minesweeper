@@ -15,14 +15,22 @@ const gameController = {
    * @param res
    */
   async create (req, res) {
-    const { difficulty, numMines, rows, cols } = req.body
-  
+    const {
+            difficulty,
+            numMines,
+            rows,
+            cols,
+            userId,
+          } = req.body
+    
     try {
-      const board = generateBoard(cols, rows, numMines)
+      const board = generateBoard(parseInt(cols), parseInt(rows),
+        parseInt(numMines))
       
       const game = new Game({
-        boardSize: [rows, cols],
-        mines: numMines,
+        user: userId,
+        boardSize: [parseInt(rows), parseInt(cols)],
+        mines: parseInt(numMines),
         elapsedTime: 0,
         difficulty,
         board,
@@ -30,6 +38,7 @@ const gameController = {
       })
       
       const newGame = await game.save()
+      await newGame.populate('user').execPopulate()
       
       res.status(201).json(newGame)
     } catch (err) {
@@ -129,6 +138,29 @@ const gameController = {
           message: err.message,
         })
       })
+    } catch (err) {
+      res.status(500).send({
+        message: err.message,
+      })
+    }
+  },
+  
+  async playGame (req, res) {
+    const {
+            userId,
+            gameId,
+          } = req.body
+    
+    try {
+      // Set all others games that are in course as paused.
+      await Game.updateMany({
+        user: userId,
+        _id: { $ne: gameId },
+      }, {
+        state: 'paused',
+      })
+      
+      res.send(res.game)
     } catch (err) {
       res.status(500).send({
         message: err.message,

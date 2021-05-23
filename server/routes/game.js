@@ -15,4 +15,7 @@ router.post('/check', getGameById, gameController.checkCell)
 // Set game as lost.
 router.post('/lost', getGameById, gameController.markAsLost)
 
+// Continue game.
+router.post('/play', getGameById, gameController.playGame)
+
 module.exports = router
