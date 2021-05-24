@@ -25,8 +25,8 @@ const generateBoard = (rows, cols, totalMines) => {
   // Set mines.
   for (let n = 0; n < totalMines; n++) {
     const index = Math.floor(Math.random() * mines.length)
-    const i = mines[index][0]
-    const j = mines[index][1]
+    const i     = mines[index][0]
+    const j     = mines[index][1]
     
     board[i][j].isMine = true
     
@@ -96,8 +96,34 @@ const getGameById = async(req, res, next) => {
   }
 }
 
+const revealNeighbors = (i, j, board) => {
+  const rows = board.length
+  const cols = board[i].length
+  
+  for (let n = -1; n <= 1; n++) {
+    // Calculate and validate row position
+    const row = i + n
+    if (row < 0 || row >= rows) continue
+    
+    for (let k = -1; k <= 1; k++) {
+      // Calculate and validate col position
+      const col = j + k
+      if (col < 0 || col >= cols) continue
+      
+      if (!board[row][col].revealed && !board[row][col].isMine) {
+        board[row][col].revealed = true
+        
+        if (board[row][col].neighborCount === 0) {
+          revealNeighbors(row, col, board)
+        }
+      }
+    }
+  }
+}
+
 module.exports = {
   generateBoard,
   getGameById,
   makeArray,
+  revealNeighbors,
 }
