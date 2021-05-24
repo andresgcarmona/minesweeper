@@ -17,6 +17,7 @@ const Container = styled.div`
 function App () {
   const [board, setBoard]         = useState([[]])
   const [game, setGame]           = useState(null)
+  const [games, setGames]         = useState([])
   const [gameState, setGameState] = useState('pending')
   const [user, setUser]           = useState(null)
   
@@ -33,6 +34,7 @@ function App () {
       // Store the user in localStorage and state.
       localStorage.setItem('user', JSON.stringify(data))
       setUser(data)
+      setGames(data.games)
     }
     
     const createUser = async() => {
@@ -69,11 +71,13 @@ function App () {
    */
   useEffect(() => {
     const terminateGame = async() => {
-      const response = await axios.post(`${gameContext.url}/games/lost`, {
+      const { data } = await axios.post(`${gameContext.url}/games/lost`, {
         id: game._id,
+        useId: user._id,
       })
       
-      setBoard(response.data.board)
+      setBoard(data.game.board)
+      setGames(data.games)
     }
     
     if (gameState === 'lost') terminateGame()
@@ -95,11 +99,9 @@ function App () {
     })
     
     setGame(data)
+    setGames(games => [...games, data])
     setBoard(data.board)
-    
-    // Set user game.
-//    user.games.push(game)
-//    setUser(user)
+    setUser(user)
   }
   
   async function continueGame (gameInfo) {
@@ -111,8 +113,9 @@ function App () {
       userId: user._id,
     })
     
-    setGame(data)
-    setBoard(data.board)
+    setGame(data.game)
+    setBoard(data.game.board)
+    setGames(data.games)
   }
   
   return (
@@ -144,7 +147,7 @@ function App () {
           
           {user && user.games && <div className="my-8">
             <h1 className="font-semibold text-3xl">Your games.</h1>
-            <GamesTable games={user.games}
+            <GamesTable games={games}
                         continueGame={continueGame}/>
           </div>}
         </div>
