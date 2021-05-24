@@ -126,7 +126,7 @@ const Config = ({
         
         <div className="mr-2">
           <p>Your time: <span className="font-semibold">{currentTime}</span></p>
-        </div>ga
+        </div>
       </div>
     </div>
   )

@@ -1,5 +1,5 @@
 import React, {
-  forwardRef, useContext, useImperativeHandle, useState, useEffect
+  forwardRef, useContext, useEffect, useImperativeHandle, useState,
 } from 'react'
 import GameContext from '../GameContext'
 import styled from '@emotion/styled'
@@ -28,13 +28,19 @@ const StyledCell = styled.span`
   }
   
   ${({ flagged }) => flagged && `background-color: rgba(255, 61, 61, 0.82)`}
-  ${({ revealed, neighborCount }) => (revealed && neighborCount > 0) && `
+  ${({
+  revealed,
+  neighborCount,
+}) => (revealed && neighborCount > 0) && `
     background-color: rgb(213, 187, 191);
     border: 1px solid grey;
     padding: 2px;
   `}
   
-  ${({ revealed, neighborCount }) => (revealed && neighborCount <= 0) && `
+  ${({
+  revealed,
+  neighborCount,
+}) => (revealed && neighborCount <= 0) && `
     background-color: #c9c9c9;
     border: 1px solid grey;
     padding: 2px;
@@ -60,9 +66,13 @@ const Cell = forwardRef(({
   }, [isRevealed])
   
   useImperativeHandle(ref, () => ({
-    async reveal() {
-      await revealCell()
-    }
+    reveal () {
+      setRevealed(true)
+  
+      if (neighborCount === 0) {
+        revealNeighbors(row, col)
+      }
+    },
   }))
   
   const revealCell = async() => {
@@ -71,9 +81,9 @@ const Cell = forwardRef(({
       row,
       col,
     })
-  
+    
     setRevealed(true)
-  
+    
     // Check if is a mine.
     if (isMine) {
       return setGameState('lost')
@@ -108,7 +118,10 @@ const Cell = forwardRef(({
     revealed={revealed}
     neighborCount={neighborCount}
     onClick={(e) => markCell(e)}
-    onContextMenu={(e) => markCell(e)}>
+    onContextMenu={(e) => markCell(e)}
+    data-revealed={revealed}
+    data-row={row}
+    data-col={col}>
     {isMine ? (revealed ? '*' : '') : (revealed ? (neighborCount > 0
       ? neighborCount
       : '') : '')}
