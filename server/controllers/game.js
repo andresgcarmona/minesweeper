@@ -1,5 +1,5 @@
 const Game              = require('../models/game')
-const { generateBoard } = require('../utils/game')
+const { generateBoard, revealNeighbors } = require('../utils/game')
 
 const gameController = {
   index (req, res) {
@@ -26,7 +26,7 @@ const gameController = {
     try {
       const board = generateBoard(parseInt(cols), parseInt(rows),
         parseInt(numMines))
-      
+  
       const game = new Game({
         user: userId,
         boardSize: [parseInt(rows), parseInt(cols)],
@@ -42,7 +42,6 @@ const gameController = {
       
       res.status(201).json(newGame)
     } catch (err) {
-      console.log(err)
       res.status(400).json({
         message: err.message,
         err: JSON.stringify(err),
@@ -66,7 +65,7 @@ const gameController = {
     
     try {
       // Get cel from board array.
-      let cell, game = null
+      let cell = null
       let r, index
       
       for (r = 0; r < res.game.board.length; r++) {
@@ -87,6 +86,8 @@ const gameController = {
         // Create a copy of the board.
         const board = [...res.game.board]
         board[r].splice(index, 1, cell)
+        
+        revealNeighbors(cell.row, cell.col, board)
         
         await Game.updateOne({
           _id: id,
@@ -113,8 +114,12 @@ const gameController = {
   },
   
   async markAsLost (req, res) {
-    const board  = [...res.game.board]
-    const { id } = req.body
+    const board = [...res.game.board]
+    
+    const {
+            id,
+            userId,
+          } = req.body
     
     for (let i = 0; i < board.length; i++) {
       for (let j = 0; j < board[i].length; j++) {
@@ -130,9 +135,12 @@ const gameController = {
           board: board,
         },
       }).then(async response => {
-        const game = await Game.findById(id)
+        const game  = await Game.findById(id)
+        const games = await Game.find({
+          user: userId,
+        })
         
-        res.json(game)
+        res.json({ game, games })
       }).catch(err => {
         res.json({
           message: err.message,
@@ -146,21 +154,25 @@ const gameController = {
   },
   
   async playGame (req, res) {
-    const {
-            userId,
-            gameId,
-          } = req.body
+    const { userId } = req.body
     
     try {
       // Set all others games that are in course as paused.
       await Game.updateMany({
-        user: userId,
-        _id: { $ne: gameId },
+        _id: { $ne: res.game._id },
+        state: { $ne: 'lost' },
       }, {
         state: 'paused',
       })
       
-      res.send(res.game)
+      const games = await Game.find({
+        user: userId,
+      })
+      
+      res.send({
+        game: res.game,
+        games,
+      })
     } catch (err) {
       res.status(500).send({
         message: err.message,
