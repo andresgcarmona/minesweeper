@@ -98,9 +98,9 @@ function App () {
       userId: user._id,
     })
     
-    setGame(data)
-    setGames(games => [...games, data])
-    setBoard(data.board)
+    setGame(data.game)
+    setGames(data.games)
+    setBoard(data.game.board)
     setUser(user)
   }
   
@@ -127,6 +127,7 @@ function App () {
       <Container className="container">
         <Config createGame={createGame}
                 gameState={gameState}
+                elapsedTime={game ? game.elapsedTime : 0}
                 setGameState={setGameState}/>
         
         <div className="App">

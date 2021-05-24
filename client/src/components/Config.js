@@ -30,9 +30,10 @@ const Config = ({
   createGame,
   setGameState,
   gameState,
+  elapsedTime = 0,
 }) => {
   const [difficulty, setDifficulty]   = useState('beginner')
-  const [currentTime, setCurrentTime] = useState(0)
+  const [currentTime, setCurrentTime] = useState(elapsedTime)
   const [rows, setRows]               = useState(10)
   const [cols, setCols]               = useState(10)
   const [numMines, setNumMines]       = useState(9)

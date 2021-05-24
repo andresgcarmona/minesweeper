@@ -1,5 +1,8 @@
-const Game              = require('../models/game')
-const { generateBoard, revealNeighbors } = require('../utils/game')
+const Game = require('../models/game')
+const {
+        generateBoard,
+        revealNeighbors,
+      }    = require('../utils/game')
 
 const gameController = {
   index (req, res) {
@@ -26,7 +29,15 @@ const gameController = {
     try {
       const board = generateBoard(parseInt(cols), parseInt(rows),
         parseInt(numMines))
-  
+      
+      // Update other game's states.
+      await Game.updateMany({
+        user: userId,
+        state: { $ne: 'lost' },
+      }, {
+        $set: { state: 'paused' },
+      })
+      
       const game = new Game({
         user: userId,
         boardSize: [parseInt(rows), parseInt(cols)],
@@ -40,7 +51,15 @@ const gameController = {
       const newGame = await game.save()
       await newGame.populate('user').execPopulate()
       
-      res.status(201).json(newGame)
+      // Get user's games.
+      const games = await Game.find({
+        user: userId,
+      })
+      
+      res.status(201).json({
+        game: newGame,
+        games,
+      })
     } catch (err) {
       res.status(400).json({
         message: err.message,
@@ -97,9 +116,12 @@ const gameController = {
             state: cell.isMine ? 'lost' : 'playing',
           },
         }).then(async response => {
-          const game = await Game.findById(id)
+          const game  = await Game.findById(id)
+          const games = await Game.find({
+            user: game.user,
+          })
           
-          res.json(game)
+          res.json({ game, games })
         }).catch(err => {
           res.json({
             message: err.message,
@@ -118,7 +140,6 @@ const gameController = {
     
     const {
             id,
-            userId,
           } = req.body
     
     for (let i = 0; i < board.length; i++) {
@@ -137,10 +158,13 @@ const gameController = {
       }).then(async response => {
         const game  = await Game.findById(id)
         const games = await Game.find({
-          user: userId,
+          user: game.user,
         })
         
-        res.json({ game, games })
+        res.json({
+          game,
+          games,
+        })
       }).catch(err => {
         res.json({
           message: err.message,
@@ -164,6 +188,9 @@ const gameController = {
       }, {
         state: 'paused',
       })
+  
+      res.game.state = 'playing'
+      await res.game.save()
       
       const games = await Game.find({
         user: userId,
