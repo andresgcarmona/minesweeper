@@ -1,7 +1,7 @@
-const games = require('./game')
-const users = require('./user')
+import games from './game.js'
+import users from './user.js'
 
-module.exports = {
+export {
   games,
   users,
 }

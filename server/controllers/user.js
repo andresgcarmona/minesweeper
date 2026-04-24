@@ -1,5 +1,5 @@
-const User = require('../models/user')
-const Game = require('../models/game')
+import User from '../models/user.js'
+import Game from '../models/game.js'
 
 /**
  * This controller groups all the user's model functionality.
@@ -16,10 +16,10 @@ const userController = {
    */
   async listAll (req, res) {
     const users = await User.find()
-    
+
     return res.json(users)
   },
-  
+
   /**
    * Creates a user and send it back to the client.
    *
@@ -30,9 +30,9 @@ const userController = {
   async create (req, res) {
     try {
       const user = new User()
-      
+
       const newUser = await user.save()
-      
+
       res.status(201).json(newUser)
     } catch (err) {
       res.status(500).json({
@@ -40,16 +40,16 @@ const userController = {
       })
     }
   },
-  
+
   async getById (req, res) {
     const { id } = req.params
-    
+
     try {
       const user = await User.findById(id)
       user.games = await Game.find({
         user: user._id,
       })
-      
+
       res.json(user)
     } catch (err) {
       res.status(500).json({
@@ -59,4 +59,4 @@ const userController = {
   },
 }
 
-module.exports = userController
+export default userController

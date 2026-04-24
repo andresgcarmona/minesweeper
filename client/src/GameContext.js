@@ -1,7 +1,7 @@
 import { createContext } from 'react'
 
 const GameContext = createContext({
-  url: 'http://localhost:3000',
+  url: '',
   game: null,
   setGame: (game) => {},
 })

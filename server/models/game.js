@@ -1,5 +1,6 @@
-const mongoose = require('mongoose')
-const Schema   = mongoose.Schema
+import mongoose from 'mongoose'
+
+const Schema = mongoose.Schema
 const ObjectId = mongoose.Schema.Types.ObjectId
 
 const gameSchema = new Schema({
@@ -18,4 +19,4 @@ const gameSchema = new Schema({
   timestamps: true,
 })
 
-module.exports = mongoose.model('Game', gameSchema)
+export default mongoose.model('Game', gameSchema)
